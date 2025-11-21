@@ -1,0 +1,34 @@
+name: Daily GP Clinic Scrape
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # Runs daily at 2 AM Perth time
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests beautifulsoup4
+        
+    - name: Run scraper
+      run: |
+        python wa_bulk_billing_FIXED.py
+        
+    - name: Commit and push if changed
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add wa_bulk_billing_by_electorate.json
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update bulk billing data - $(date +'%Y-%m-%d')" && git push)
