@@ -24,7 +24,7 @@ jobs:
         
     - name: Run scraper
       run: |
-         python wa_bulk_billing_STATE_AND_FEDERAL.py
+         python wa_bulk_billing_BETTER_ADDRESSES.py
         
     - name: Commit and push if changed
       run: |
